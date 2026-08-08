@@ -1,0 +1,12 @@
+backend/node_modules/
+backend/.env
+backend/data/*.tmp
+frontend/.dart_tool/
+frontend/.flutter-plugins
+frontend/.flutter-plugins-dependencies
+frontend/build/
+frontend/.packages
+.idea/
+.vscode/
+*.log
+
