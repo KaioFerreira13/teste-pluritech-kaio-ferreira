@@ -1,7 +1,20 @@
 {
-  "stays": [],
+  "stays": [
+    {
+      "id": "58c4f4e2-f213-45ef-ad66-f9722ba12331",
+      "code": "CAT-1",
+      "tutorName": "kaio",
+      "tutorContact": "31999167434",
+      "species": "cat",
+      "breed": "Golden",
+      "entryDate": "2026-08-07",
+      "expectedExitDate": null,
+      "createdAt": "2026-08-09T21:28:25.005Z",
+      "updatedAt": "2026-08-09T21:28:25.005Z"
+    }
+  ],
   "counters": {
     "dog": 0,
-    "cat": 0
+    "cat": 1
   }
 }
