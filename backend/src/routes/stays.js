@@ -3,12 +3,27 @@ import { Router } from "express";
 import { db } from "../database.js";
 import { generateStayCode } from "../services/code.js";
 import { validateStay } from "../services/dataValidation.js";
+import { calculateStayDays } from "../services/stayDaysService.js";
 
 export const staysRouter = Router();
 
+function addCalculatedDays(stay) {
+  const calculatedDays = calculateStayDays(
+    stay.entryDate,
+    stay.expectedExitDate,
+  );
+
+  return {
+    ...stay,
+    ...calculatedDays,
+  };
+}
+
 //rotas GET
 staysRouter.get("/", (_request, response) => {
-  response.json(db.data.stays);
+  const stays = db.data.stays.map(addCalculatedDays);
+
+  return response.json(stays);
 });
 
 staysRouter.get("/:id", (request, response) => {
@@ -21,11 +36,10 @@ staysRouter.get("/:id", (request, response) => {
       message: "Hospedagem não encontrada!",
     });
   }
-  return response.json(stay);
+  return response.json(addCalculatedDays(stay));
 });
 // rotas POST
 staysRouter.post("/", async (request, response) => {
-
   const {
     tutorName,
     tutorContact,
@@ -60,8 +74,7 @@ staysRouter.post("/", async (request, response) => {
   db.data.stays.push(stay);
   await db.write();
 
-  return response.status(201).json(stay);
-
+  return response.status(201).json(addCalculatedDays(stay));
 });
 
 // rotas PUT
@@ -108,7 +121,7 @@ staysRouter.put("/:id", async (request, response) => {
   db.data.stays[stayIndex] = updatedStay;
   await db.write();
 
-  return response.json(updatedStay);
+  return response.json(addCalculatedDays(updatedStay));
 });
 
 // rotas DELETE

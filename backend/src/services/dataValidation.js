@@ -1,7 +1,6 @@
 import { parseDate } from "./dateService.js";
 
-export function validateStay(data){
-    
+export function validateStay(data) {
   const allowedSpecies = ["dog", "cat"];
 
   const {
@@ -13,7 +12,13 @@ export function validateStay(data){
     expectedExitDate,
   } = data;
 
-  if (!tutorName || !tutorContact || !species || !breed || !entryDate) {
+  const requiredFields = [tutorName, tutorContact, species, breed, entryDate];
+
+  const hasEmptyField = requiredFields.some(
+    (value) => typeof value !== "string" || value.trim() === "",
+  );
+
+  if (hasEmptyField) {
     return "Preencha todos os campos obrigatorios!";
   }
 
@@ -27,7 +32,9 @@ export function validateStay(data){
     return "Data de entrada invalida!";
   }
 
-  const parsedExpectedExitDate = expectedExitDate ? parseDate(expectedExitDate) : null;
+  const parsedExpectedExitDate = expectedExitDate
+    ? parseDate(expectedExitDate)
+    : null;
 
   if (expectedExitDate) {
     if (!parsedExpectedExitDate) {
