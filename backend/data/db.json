@@ -1,4 +1,7 @@
 {
-  "items": []
+  "stays": [],
+  "counters": {
+    "dog": 0,
+    "cat": 0
+  }
 }
-

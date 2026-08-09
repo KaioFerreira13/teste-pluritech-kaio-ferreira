@@ -1,7 +1,7 @@
 import cors from "cors";
 import express from "express";
 import { config } from "./config.js";
-import { itemsRouter } from "./routes/items.js";
+import { staysRouter } from "./routes/stays.js";
 
 export const app = express();
 
@@ -12,7 +12,7 @@ app.get("/api/health", (_request, response) => {
   response.json({ status: "ok" });
 });
 
-app.use("/api/items", itemsRouter);
+app.use("/api/stays", staysRouter);
 
 app.use((_request, response) => {
   response.status(404).json({ message: "Rota nao encontrada" });
