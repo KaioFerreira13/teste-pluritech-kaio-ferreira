@@ -60,4 +60,14 @@ class StayService {
       );
     }
   }
+
+  Future<void> deleteStay(String id) async {
+    final response = await _client.delete(Uri.parse('$apiUrl/stays/$id'));
+
+    if (response.statusCode != 200) {
+      throw Exception(
+        'Não foi possível excluir a hospedagem! Tente novamente mais tarde',
+      );
+    }
+  }
 }

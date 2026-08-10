@@ -106,4 +106,30 @@ void main() {
       throwsA(isA<Exception>()),
     );
   });
+
+  test('exclui uma hospedagem pelo id', () async {
+    final mockClient = MockClient((request) async {
+      expect(request.method, 'DELETE');
+      expect(request.url.path, '/api/stays/uuid-1');
+
+      return http.Response('', 200);
+    });
+
+    final service = StayService(client: mockClient);
+
+    await service.deleteStay('uuid-1');
+  });
+
+  test('lanca excecao quando a exclusao falha', () async {
+    final mockClient = MockClient((request) async {
+      return http.Response('', 404);
+    });
+
+    final service = StayService(client: mockClient);
+
+    await expectLater(
+      service.deleteStay('id-inexistente'),
+      throwsA(isA<Exception>()),
+    );
+  });
 }

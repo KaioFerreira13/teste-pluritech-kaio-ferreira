@@ -47,6 +47,64 @@ class _StaysPageState extends State<StaysPage> {
     }
   }
 
+  Future<void> _confirmDelete(Stay stay) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('Excluir hospedagem?'),
+          content: Text(
+            'O registro ${stay.code} será excluído permanentemente.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop(false);
+              },
+              child: const Text('Cancelar'),
+            ),
+            FilledButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop(true);
+              },
+              child: const Text('Excluir'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmed != true || !mounted) {
+      return;
+    }
+
+    try {
+      await widget.service.deleteStay(stay.id);
+
+      if (!mounted) {
+        return;
+      }
+
+      setState(_loadStays);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Hospedagem excluída com sucesso.')),
+      );
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Não foi possível excluir a hospedagem, tente novamente mais tarde.',
+          ),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -114,6 +172,13 @@ class _StaysPageState extends State<StaysPage> {
                       if (expectedExitDate != null)
                         Text('Diárias previstas: ${stay.expectedTotalDays}'),
                     ],
+                  ),
+                  trailing: IconButton(
+                    onPressed: () {
+                      _confirmDelete(stay);
+                    },
+                    tooltip: 'Excluir hospedagem',
+                    icon: const Icon(Icons.delete_outline),
                   ),
                 ),
               );
