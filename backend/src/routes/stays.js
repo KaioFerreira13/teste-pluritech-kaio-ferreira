@@ -38,6 +38,7 @@ staysRouter.get("/:id", (request, response) => {
   }
   return response.json(addCalculatedDays(stay));
 });
+
 // rotas POST
 staysRouter.post("/", async (request, response) => {
   const {
@@ -48,21 +49,27 @@ staysRouter.post("/", async (request, response) => {
     entryDate,
     expectedExitDate,
   } = request.body;
+  
   const validationError = validateStay(request.body);
-
+  
   if (validationError) {
     return response.status(400).json({
       message: validationError,
     });
   }
-
+  
+  const normalizedTutorContact = {
+    email: tutorContact.email.trim(),
+    phone: tutorContact.phone.trim(),
+  };
+  
   const code = generateStayCode(species);
 
   const stay = {
     id: randomUUID(),
     code,
     tutorName,
-    tutorContact,
+    tutorContact: normalizedTutorContact,
     species,
     breed,
     entryDate,
@@ -105,12 +112,17 @@ staysRouter.put("/:id", async (request, response) => {
     expectedExitDate,
   } = request.body;
 
+  const normalizedTutorContact = {
+    email: tutorContact.email.trim(),
+    phone: tutorContact.phone.trim(),
+  };
+
   const currentStay = db.data.stays[stayIndex];
 
   const updatedStay = {
     ...currentStay,
     tutorName,
-    tutorContact,
+    tutorContact: normalizedTutorContact,
     species,
     breed,
     entryDate,

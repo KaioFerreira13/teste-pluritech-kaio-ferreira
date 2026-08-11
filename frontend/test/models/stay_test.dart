@@ -6,7 +6,10 @@ void main() {
     'id': 'uuid-1',
     'code': 'DOG-1',
     'tutorName': 'Maria',
-    'tutorContact': '11999999999',
+    'tutorContact': {
+      'email': 'maria@email.com',
+      'phone': '11999999999',
+    },
     'species': 'dog',
     'breed': 'SRD',
     'entryDate': '2026-08-08',
@@ -22,6 +25,8 @@ void main() {
 
     expect(stay.code, 'DOG-1');
     expect(stay.tutorName, 'Maria');
+    expect(stay.tutorContact.email, 'maria@email.com');
+    expect(stay.tutorContact.phone, '11999999999');
     expect(stay.entryDate, DateTime.parse('2026-08-08'));
     expect(stay.expectedExitDate, DateTime.parse('2026-08-12'));
     expect(stay.currentDays, 1);
@@ -39,6 +44,8 @@ void main() {
 
     expect(stay.code, 'DOG-1');
     expect(stay.tutorName, 'Maria');
+    expect(stay.tutorContact.email, 'maria@email.com');
+    expect(stay.tutorContact.phone, '11999999999');
     expect(stay.entryDate, DateTime.parse('2026-08-08'));
     expect(stay.expectedExitDate, isNull);
     expect(stay.currentDays, 1);

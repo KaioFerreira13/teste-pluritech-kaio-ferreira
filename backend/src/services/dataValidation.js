@@ -12,7 +12,12 @@ export function validateStay(data) {
     expectedExitDate,
   } = data;
 
-  const requiredFields = [tutorName, tutorContact, species, breed, entryDate];
+  const {
+    email,
+    phone,
+  } = tutorContact ?? {};
+
+  const requiredFields = [tutorName, email, phone, species, breed, entryDate];
 
   const hasEmptyField = requiredFields.some(
     (value) => typeof value !== "string" || value.trim() === "",

@@ -1,8 +1,10 @@
+import 'tutor_contact.dart';
+
 class Stay {
   final String id;
   final String code;
   final String tutorName;
-  final String tutorContact;
+  final TutorContact tutorContact;
   final String species;
   final String breed;
   final DateTime entryDate;
@@ -32,7 +34,9 @@ class Stay {
       id: json['id'] as String,
       code: json['code'] as String,
       tutorName: json['tutorName'] as String,
-      tutorContact: json['tutorContact'] as String,
+      tutorContact: TutorContact.fromJson(
+        json['tutorContact'] as Map<String, dynamic>,
+      ),
       species: json['species'] as String,
       breed: json['breed'] as String,
       entryDate: DateTime.parse(json['entryDate'] as String),

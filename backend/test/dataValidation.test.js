@@ -4,7 +4,10 @@ import { validateStay } from "../src/services/dataValidation.js";
 
 const validStay = {
   tutorName: "Maria",
-  tutorContact: "11999999999",
+  tutorContact: {
+    email: "maria@email.com",
+    phone: "11999999999",
+  },
   species: "dog",
   breed: "SRD",
   entryDate: "2026-08-08",
@@ -13,6 +16,36 @@ const validStay = {
 
 test("aceita uma hospedagem valida", () => {
   assert.equal(validateStay(validStay), null);
+});
+
+test("rejeita contato sem telefone", () => {
+  const result = validateStay({
+    ...validStay,
+    tutorContact: {
+      email: "maria@email.com",
+      phone: "",
+    },
+  });
+
+  assert.equal(
+    result,
+    "Preencha todos os campos obrigatorios!",
+  );
+});
+
+test("rejeita contato sem email", () => {
+  const result = validateStay({
+    ...validStay,
+    tutorContact: {
+      email: "",
+      phone: "11999999999",
+    },
+  });
+
+  assert.equal(
+    result,
+    "Preencha todos os campos obrigatorios!",
+  );
 });
 
 test("aceita hospedagem sem previsao de saida", () => {
@@ -67,7 +100,10 @@ test("rejeita data de saida anterior a data de entrada", () => {
     entryDate: "2026-08-08",
   });
 
-  assert.equal(result, "A previsão de saida não pode ser anterior a data de entrada!");
+  assert.equal(
+    result,
+    "A previsão de saida não pode ser anterior a data de entrada!",
+  );
 });
 
 test("rejeita campo preenchido somente com espacos", () => {
@@ -76,8 +112,5 @@ test("rejeita campo preenchido somente com espacos", () => {
     tutorName: "   ",
   });
 
-  assert.equal(
-    result,
-    "Preencha todos os campos obrigatorios!",
-  );
+  assert.equal(result, "Preencha todos os campos obrigatorios!");
 });

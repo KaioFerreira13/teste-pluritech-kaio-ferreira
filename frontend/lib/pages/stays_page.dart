@@ -160,7 +160,8 @@ class _StaysPageState extends State<StaysPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text('Tutor: ${stay.tutorName}'),
-                      Text('Contato: ${stay.tutorContact}'),
+                      Text('Telefone: ${stay.tutorContact.phone}'),
+                      Text('Email: ${stay.tutorContact.email}'),
                       Text('Entrada: ${_formatDate(stay.entryDate)}'),
                       Text('Raça: ${stay.breed}'),
                       Text('Diárias até o momento: ${stay.currentDays}'),

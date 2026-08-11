@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/stay_service.dart';
+import '../models/tutor_contact.dart';
 
 class StayFormPage extends StatefulWidget {
   const StayFormPage({super.key, required this.service});
@@ -21,7 +22,8 @@ class _StayFormPageState extends State<StayFormPage> {
   final _formKey = GlobalKey<FormState>();
 
   final _tutorNameController = TextEditingController();
-  final _tutorContactController = TextEditingController();
+  final _tutorPhoneController = TextEditingController();
+  final _tutorEmailController = TextEditingController();
   final _breedController = TextEditingController();
   DateTime _entryDate = DateTime.now();
   DateTime? _expectedExitDate;
@@ -38,7 +40,8 @@ class _StayFormPageState extends State<StayFormPage> {
   @override
   void dispose() {
     _tutorNameController.dispose();
-    _tutorContactController.dispose();
+    _tutorPhoneController.dispose();
+    _tutorEmailController.dispose();
     _breedController.dispose();
     super.dispose();
   }
@@ -95,7 +98,10 @@ class _StayFormPageState extends State<StayFormPage> {
     try {
       await widget.service.createStay(
         tutorName: _tutorNameController.text.trim(),
-        tutorContact: _tutorContactController.text.trim(),
+        tutorContact: TutorContact(
+          email: _tutorEmailController.text.trim(),
+          phone: _tutorPhoneController.text.trim(),
+        ),
         species: _species,
         breed: _breedController.text.trim(),
         entryDate: _entryDate,
@@ -143,11 +149,21 @@ class _StayFormPageState extends State<StayFormPage> {
             ),
             const SizedBox(height: 16),
             TextFormField(
-              controller: _tutorContactController,
+              controller: _tutorPhoneController,
               validator: _validateRequired,
               keyboardType: TextInputType.phone,
               decoration: const InputDecoration(
-                labelText: 'Contato do tutor',
+                labelText: 'Telefone do tutor',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _tutorEmailController,
+              validator: _validateRequired,
+              keyboardType: TextInputType.emailAddress,
+              decoration: const InputDecoration(
+                labelText: 'Email do tutor',
                 border: OutlineInputBorder(),
               ),
             ),

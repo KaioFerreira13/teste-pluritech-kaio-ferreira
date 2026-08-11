@@ -1,32 +1,23 @@
 {
   "stays": [
     {
-      "id": "47411f83-e258-4f11-864c-b1eabf1b72ce",
-      "code": "CAT-2",
-      "tutorName": "teste bla",
-      "tutorContact": "fdas",
-      "species": "cat",
-      "breed": "careca",
-      "entryDate": "2026-08-10",
-      "expectedExitDate": "2026-08-26",
-      "createdAt": "2026-08-10T19:51:15.333Z",
-      "updatedAt": "2026-08-10T19:51:15.333Z"
-    },
-    {
-      "id": "fd484c09-f89d-48bd-9b84-850d4b66420e",
-      "code": "DOG-1",
-      "tutorName": "bla 2",
-      "tutorContact": "rew",
+      "id": "3ba805e8-26ca-4425-860b-da857a94e132",
+      "code": "DOG-2",
+      "tutorName": "bla",
+      "tutorContact": {
+        "email": "yesye@email",
+        "phone": "342rrew"
+      },
       "species": "dog",
       "breed": "golden",
       "entryDate": "2026-08-10",
       "expectedExitDate": null,
-      "createdAt": "2026-08-10T19:51:27.747Z",
-      "updatedAt": "2026-08-10T19:51:27.747Z"
+      "createdAt": "2026-08-10T20:32:26.158Z",
+      "updatedAt": "2026-08-10T20:32:26.158Z"
     }
   ],
   "counters": {
-    "dog": 1,
+    "dog": 2,
     "cat": 2
   }
 }

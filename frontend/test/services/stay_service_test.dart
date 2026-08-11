@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
+import 'package:pluritech_frontend/models/tutor_contact.dart';
 import 'package:pluritech_frontend/services/stay_service.dart';
 
 void main() {
@@ -16,7 +17,10 @@ void main() {
             'id': 'uuid-1',
             'code': 'DOG-1',
             'tutorName': 'Maria',
-            'tutorContact': '11999999999',
+            'tutorContact': {
+              'email': 'maria@email.com',
+              'phone': '11999999999',
+            },
             'species': 'dog',
             'breed': 'SRD',
             'entryDate': '2026-08-08',
@@ -61,7 +65,7 @@ void main() {
 
       expect(body, {
         'tutorName': 'Maria',
-        'tutorContact': '11999999999',
+        'tutorContact': {'email': 'maria@email.com', 'phone': '11999999999'},
         'species': 'dog',
         'breed': 'SRD',
         'entryDate': '2026-08-09',
@@ -75,7 +79,10 @@ void main() {
 
     await service.createStay(
       tutorName: 'Maria',
-      tutorContact: '11999999999',
+      tutorContact: const TutorContact(
+        email: 'maria@email.com',
+        phone: '11999999999',
+      ),
       species: 'dog',
       breed: 'SRD',
       entryDate: DateTime(2026, 8, 9),
@@ -87,7 +94,10 @@ void main() {
     final mockClient = MockClient((request) async {
       final body = jsonDecode(request.body) as Map<String, dynamic>;
 
-      expect(body['tutorContact'], ' ');
+      expect(body['tutorContact'], {
+        'email': ' ',
+        'phone': '11999999999',
+      });
 
       return http.Response('', 400);
     });
@@ -97,7 +107,10 @@ void main() {
     await expectLater(
       service.createStay(
         tutorName: 'Maria',
-        tutorContact: ' ',
+        tutorContact: const TutorContact(
+          email: ' ',
+          phone: '11999999999',
+        ),
         species: 'dog',
         breed: 'SRD',
         entryDate: DateTime(2026, 8, 9),
