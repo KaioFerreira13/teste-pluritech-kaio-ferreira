@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import '../services/stay_service.dart';
 import '../models/tutor_contact.dart';
+import '../models/stay.dart';
 
 class StayFormPage extends StatefulWidget {
-  const StayFormPage({super.key, required this.service});
+  const StayFormPage({super.key, required this.service, this.stay});
   final StayService service;
+  final Stay? stay;
 
   @override
   State<StayFormPage> createState() => _StayFormPageState();
@@ -96,18 +98,32 @@ class _StayFormPageState extends State<StayFormPage> {
     });
 
     try {
-      await widget.service.createStay(
-        tutorName: _tutorNameController.text.trim(),
-        tutorContact: TutorContact(
-          email: _tutorEmailController.text.trim(),
-          phone: _tutorPhoneController.text.trim(),
-        ),
-        species: _species,
-        breed: _breedController.text.trim(),
-        entryDate: _entryDate,
-        expectedExitDate: _expectedExitDate,
+      final tutorContact = TutorContact(
+        email: _tutorEmailController.text.trim(),
+        phone: _tutorPhoneController.text.trim(),
       );
 
+      final stay = widget.stay;
+      if (stay == null) {
+        await widget.service.createStay(
+          tutorName: _tutorNameController.text.trim(),
+          tutorContact: tutorContact,
+          species: _species,
+          breed: _breedController.text.trim(),
+          entryDate: _entryDate,
+          expectedExitDate: _expectedExitDate,
+        );
+      } else {
+        await widget.service.updateStay(
+          id: stay.id,
+          tutorName: _tutorNameController.text.trim(),
+          tutorContact: tutorContact,
+          species: _species,
+          breed: _breedController.text.trim(),
+          entryDate: _entryDate,
+          expectedExitDate: _expectedExitDate,
+        );
+      }
       if (!mounted) {
         return;
       }
@@ -123,17 +139,38 @@ class _StayFormPageState extends State<StayFormPage> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Não foi possível cadastrar a hospedagem.'),
-        ),
+        const SnackBar(content: Text('Não foi possível salvar a hospedagem.')),
       );
     }
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    final stay = widget.stay;
+
+    if (stay == null) {
+      return;
+    }
+
+    _tutorNameController.text = stay.tutorName;
+    _tutorPhoneController.text = stay.tutorContact.phone;
+    _tutorEmailController.text = stay.tutorContact.email;
+    _breedController.text = stay.breed;
+    _species = stay.species;
+    _entryDate = stay.entryDate;
+    _expectedExitDate = stay.expectedExitDate;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Nova hospedagem')),
+      appBar: AppBar(
+        title: Text(
+          widget.stay == null ? 'Nova hospedagem' : 'Editar hospedagem',
+        ),
+      ),
       body: Form(
         key: _formKey,
         child: ListView(
@@ -239,7 +276,13 @@ class _StayFormPageState extends State<StayFormPage> {
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
                   : const Icon(Icons.save),
-              label: Text(_isSaving ? 'Salvando...' : 'Salvar hospedagem'),
+              label: Text(
+                _isSaving
+                    ? 'Salvando...'
+                    : widget.stay == null
+                      ? 'Cadastrar hospedagem'
+                      : 'Salvar alterações',
+              ),
             ),
           ],
         ),

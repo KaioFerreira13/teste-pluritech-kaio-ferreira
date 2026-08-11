@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/stay.dart';
+import '../models/tutor_contact.dart';
 
 class StayService {
   StayService({http.Client? client}) : _client = client ?? http.Client();
@@ -33,7 +34,7 @@ class StayService {
 
   Future<void> createStay({
     required String tutorName,
-    required String tutorContact,
+    required TutorContact tutorContact,
     required String species,
     required String breed,
     required DateTime entryDate,
@@ -44,7 +45,7 @@ class StayService {
       headers: {'content-type': 'application/json; charset=utf-8'},
       body: jsonEncode({
         'tutorName': tutorName,
-        'tutorContact': tutorContact,
+        'tutorContact': tutorContact.toJson(),
         'species': species,
         'breed': breed,
         'entryDate': _formatApiDate(entryDate),
@@ -61,6 +62,37 @@ class StayService {
     }
   }
 
+  Future<void> updateStay({
+    required String id,
+    required String tutorName,
+    required TutorContact tutorContact,
+    required String species,
+    required String breed,
+    required DateTime entryDate,
+    DateTime? expectedExitDate,
+  }) async {
+    final response = await _client.put(
+      Uri.parse('$apiUrl/stays/$id'),
+      headers: {'content-type': 'application/json; charset=utf-8'},
+      body: jsonEncode({
+        'tutorName': tutorName,
+        'tutorContact': tutorContact.toJson(),
+        'species': species,
+        'breed': breed,
+        'entryDate': _formatApiDate(entryDate),
+        'expectedExitDate': expectedExitDate == null
+            ? null
+            : _formatApiDate(expectedExitDate),
+      }),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception(
+        'Não foi possível atualizar a hospedagem, tente novamente mais tarde',
+      );
+    }
+  }
+  
   Future<void> deleteStay(String id) async {
     final response = await _client.delete(Uri.parse('$apiUrl/stays/$id'));
 

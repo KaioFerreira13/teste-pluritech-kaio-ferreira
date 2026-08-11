@@ -105,6 +105,20 @@ class _StaysPageState extends State<StaysPage> {
     }
   }
 
+  Future<void> _openEditForm(Stay stay) async {
+    final updated = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder: (context) {
+          return StayFormPage(service: widget.service, stay: stay);
+        },
+      ),
+    );
+
+    if (updated == true && mounted) {
+      setState(_loadStays);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -174,12 +188,24 @@ class _StaysPageState extends State<StaysPage> {
                         Text('Diárias previstas: ${stay.expectedTotalDays}'),
                     ],
                   ),
-                  trailing: IconButton(
-                    onPressed: () {
-                      _confirmDelete(stay);
-                    },
-                    tooltip: 'Excluir hospedagem',
-                    icon: const Icon(Icons.delete_outline),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          _openEditForm(stay);
+                        },
+                        tooltip: 'Editar hospedagem',
+                        icon: const Icon(Icons.edit_outlined),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          _confirmDelete(stay);
+                        },
+                        tooltip: 'Excluir hospedagem',
+                        icon: const Icon(Icons.delete_outline),
+                      ),
+                    ],
                   ),
                 ),
               );

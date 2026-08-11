@@ -94,10 +94,7 @@ void main() {
     final mockClient = MockClient((request) async {
       final body = jsonDecode(request.body) as Map<String, dynamic>;
 
-      expect(body['tutorContact'], {
-        'email': ' ',
-        'phone': '11999999999',
-      });
+      expect(body['tutorContact'], {'email': ' ', 'phone': '11999999999'});
 
       return http.Response('', 400);
     });
@@ -107,10 +104,7 @@ void main() {
     await expectLater(
       service.createStay(
         tutorName: 'Maria',
-        tutorContact: const TutorContact(
-          email: ' ',
-          phone: '11999999999',
-        ),
+        tutorContact: const TutorContact(email: ' ', phone: '11999999999'),
         species: 'dog',
         breed: 'SRD',
         entryDate: DateTime(2026, 8, 9),
@@ -142,6 +136,63 @@ void main() {
 
     await expectLater(
       service.deleteStay('id-inexistente'),
+      throwsA(isA<Exception>()),
+    );
+  });
+
+  test('atualiza uma hospedagem pelo id', () async {
+    final mockClient = MockClient((request) async {
+      expect(request.method, 'PUT');
+      expect(request.url.path, '/api/stays/uuid-1');
+
+      final body = jsonDecode(request.body) as Map<String, dynamic>;
+
+      expect(body, {
+        'tutorName': 'Maria Atualizada',
+        'tutorContact': {'email': 'novo@email.com', 'phone': '11888888888'},
+        'species': 'cat',
+        'breed': 'Siamês',
+        'entryDate': '2026-08-09',
+        'expectedExitDate': null,
+      });
+
+      return http.Response('', 200);
+    });
+
+    final service = StayService(client: mockClient);
+
+    await service.updateStay(
+      id: 'uuid-1',
+      tutorName: 'Maria Atualizada',
+      tutorContact: const TutorContact(
+        email: 'novo@email.com',
+        phone: '11888888888',
+      ),
+      species: 'cat',
+      breed: 'Siamês',
+      entryDate: DateTime(2026, 8, 9),
+    );
+  });
+
+  test('lanca excecao quando a atualizacao falha', () async {
+    final mockClient = MockClient((request) async {
+      return http.Response('', 404);
+    });
+
+    final service = StayService(client: mockClient);
+
+    await expectLater(
+      service.updateStay(
+        id: 'id-inexistente',
+        tutorName: 'Maria',
+        tutorContact: const TutorContact(
+          email: 'maria@email.com',
+          phone: '11999999999',
+        ),
+        species: 'dog',
+        breed: 'SRD',
+        entryDate: DateTime(2026, 8, 9),
+      ),
       throwsA(isA<Exception>()),
     );
   });
