@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+
+import '../formatters/phone_formatter.dart';
 import '../services/stay_service.dart';
 import '../models/tutor_contact.dart';
 import '../models/stay.dart';
@@ -27,6 +30,7 @@ class _StayFormPageState extends State<StayFormPage> {
   final _tutorPhoneController = TextEditingController();
   final _tutorEmailController = TextEditingController();
   final _breedController = TextEditingController();
+  final MaskTextInputFormatter _phoneMaskFormatter = PhoneFormatter.create();
   DateTime _entryDate = DateTime.now();
   DateTime? _expectedExitDate;
   String? _validateRequired(String? value) {
@@ -38,6 +42,19 @@ class _StayFormPageState extends State<StayFormPage> {
 
   String _species = 'dog';
   bool _isSaving = false;
+
+  String? _validatePhone(String? phone) {
+    if (phone == null || phone.trim().isEmpty) {
+      return "Numero de telefone invalido";
+    }
+
+    phone = _phoneMaskFormatter.getUnmaskedText();
+    if (phone.length != 11) {
+      return "O numero de telefone deve conter 11 digitos!";
+    }
+
+    return null;
+  }
 
   @override
   void dispose() {
@@ -100,7 +117,7 @@ class _StayFormPageState extends State<StayFormPage> {
     try {
       final tutorContact = TutorContact(
         email: _tutorEmailController.text.trim(),
-        phone: _tutorPhoneController.text.trim(),
+        phone: _phoneMaskFormatter.getUnmaskedText(),
       );
 
       final stay = widget.stay;
@@ -155,7 +172,9 @@ class _StayFormPageState extends State<StayFormPage> {
     }
 
     _tutorNameController.text = stay.tutorName;
-    _tutorPhoneController.text = stay.tutorContact.phone;
+    _tutorPhoneController.text = _phoneMaskFormatter.maskText(
+      stay.tutorContact.phone,
+    );
     _tutorEmailController.text = stay.tutorContact.email;
     _breedController.text = stay.breed;
     _species = stay.species;
@@ -187,8 +206,9 @@ class _StayFormPageState extends State<StayFormPage> {
             const SizedBox(height: 16),
             TextFormField(
               controller: _tutorPhoneController,
-              validator: _validateRequired,
+              validator: _validatePhone,
               keyboardType: TextInputType.phone,
+              inputFormatters: [_phoneMaskFormatter],
               decoration: const InputDecoration(
                 labelText: 'Telefone do tutor',
                 border: OutlineInputBorder(),
@@ -280,8 +300,8 @@ class _StayFormPageState extends State<StayFormPage> {
                 _isSaving
                     ? 'Salvando...'
                     : widget.stay == null
-                      ? 'Cadastrar hospedagem'
-                      : 'Salvar alterações',
+                    ? 'Cadastrar hospedagem'
+                    : 'Salvar alterações',
               ),
             ),
           ],
