@@ -57,26 +57,26 @@ class _StayFormPageState extends State<StayFormPage> {
   }
 
   String? _validateEmail(String? value) {
-  if (value == null || value.trim().isEmpty) {
-    return 'E-mail é obrigatório';
+    if (value == null || value.trim().isEmpty) {
+      return 'E-mail é obrigatório';
+    }
+
+    final email = value.trim();
+
+    if (email.length > 254) {
+      return 'E-mail muito longo';
+    }
+
+    final regex = RegExp(
+      r"^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)+$",
+    );
+
+    if (!regex.hasMatch(email)) {
+      return 'E-mail inválido';
+    }
+
+    return null;
   }
-
-  final email = value.trim();
-
-  if (email.length > 254) {
-    return 'E-mail muito longo';
-  }
-
-  final regex = RegExp(
-    r"^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)+$",
-  );
-
-  if (!regex.hasMatch(email)) {
-    return 'E-mail inválido';
-  }
-
-  return null;
-}
 
   @override
   void dispose() {
@@ -213,121 +213,140 @@ class _StayFormPageState extends State<StayFormPage> {
           widget.stay == null ? 'Nova hospedagem' : 'Editar hospedagem',
         ),
       ),
-      body: Form(
-        key: _formKey,
-        child: ListView(
-          padding: const EdgeInsets.all(16),
-          children: [
-            TextFormField(
-              controller: _tutorNameController,
-              validator: _validateRequired,
-              decoration: const InputDecoration(
-                labelText: 'Nome do tutor',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _tutorPhoneController,
-              validator: _validatePhone,
-              keyboardType: TextInputType.phone,
-              inputFormatters: [_phoneMaskFormatter],
-              decoration: const InputDecoration(
-                labelText: 'Telefone do tutor',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _tutorEmailController,
-              validator: _validateEmail,
-              keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(
-                labelText: 'Email do tutor',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 16),
-            DropdownButtonFormField<String>(
-              initialValue: _species,
-              decoration: const InputDecoration(
-                labelText: 'Espécie',
-                border: OutlineInputBorder(),
-              ),
-              items: const [
-                DropdownMenuItem(value: 'dog', child: Text('Cachorro')),
-                DropdownMenuItem(value: 'cat', child: Text('Gato')),
-              ],
-              onChanged: (value) {
-                if (value != null) {
-                  setState(() {
-                    _species = value;
-                  });
-                }
-              },
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _breedController,
-              validator: _validateRequired,
-              decoration: const InputDecoration(
-                labelText: 'Raça',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 16),
-            OutlinedButton.icon(
-              onPressed: _selectEntryDate,
-              icon: const Icon(Icons.calendar_today),
-              label: Text('Entrada: ${_formatDate(_entryDate)}'),
-            ),
-            const SizedBox(height: 16),
-            Row(
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 600),
+          child: Form(
+            key: _formKey,
+            child: ListView(
+              padding: const EdgeInsets.all(16),
               children: [
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: _selectExpectedExitDate,
-                    icon: const Icon(Icons.event_available),
-                    label: Text(
-                      _expectedExitDate == null
-                          ? 'Selecionar previsão de saída'
-                          : 'Saída: ${_formatDate(_expectedExitDate!)}',
-                    ),
+                TextFormField(
+                  textInputAction: TextInputAction.next,
+                  controller: _tutorNameController,
+                  validator: _validateRequired,
+                  decoration: const InputDecoration(
+                    labelText: 'Nome do tutor',
+                    border: OutlineInputBorder(),
                   ),
                 ),
-                if (_expectedExitDate != null) ...[
-                  const SizedBox(width: 8),
-                  IconButton(
-                    onPressed: () {
-                      setState(() {
-                        _expectedExitDate = null;
-                      });
-                    },
-                    tooltip: 'Remover previsão de saída',
-                    icon: const Icon(Icons.clear),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        textInputAction: TextInputAction.next,
+                        controller: _tutorPhoneController,
+                        validator: _validatePhone,
+                        keyboardType: TextInputType.phone,
+                        inputFormatters: [_phoneMaskFormatter],
+                        decoration: const InputDecoration(
+                          labelText: 'Telefone do tutor',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: TextFormField(
+                        textInputAction: TextInputAction.next,
+                        controller: _tutorEmailController,
+                        validator: _validateEmail,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: const InputDecoration(
+                          labelText: 'Email do tutor',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                DropdownButtonFormField<String>(
+                  initialValue: _species,
+                  decoration: const InputDecoration(
+                    labelText: 'Espécie',
+                    border: OutlineInputBorder(),
                   ),
-                ],
+                  items: const [
+                    DropdownMenuItem(value: 'dog', child: Text('Cachorro')),
+                    DropdownMenuItem(value: 'cat', child: Text('Gato')),
+                  ],
+                  onChanged: (value) {
+                    if (value != null) {
+                      setState(() {
+                        _species = value;
+                      });
+                    }
+                  },
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  textInputAction: TextInputAction.next,
+                  controller: _breedController,
+                  validator: _validateRequired,
+                  decoration: const InputDecoration(
+                    labelText: 'Raça',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: _selectEntryDate,
+                        icon: const Icon(Icons.calendar_today),
+                        label: Text('Entrada: ${_formatDate(_entryDate)}'),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: _selectExpectedExitDate,
+                        icon: const Icon(Icons.event_available),
+                        label: Text(
+                          _expectedExitDate == null
+                              ? 'Selecionar previsão de saída'
+                              : 'Saída: ${_formatDate(_expectedExitDate!)}',
+                        ),
+                      ),
+                    ),
+                    if (_expectedExitDate != null) ...[
+                      const SizedBox(width: 8),
+                      IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _expectedExitDate = null;
+                          });
+                        },
+                        tooltip: 'Remover previsão de saída',
+                        icon: const Icon(Icons.clear),
+                      ),
+                    ],
+                  ],
+                ),
+                const SizedBox(height: 24),
+                FilledButton.icon(
+                  onPressed: _isSaving ? null : _save,
+                  icon: _isSaving
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(Icons.save),
+                  label: Text(
+                    _isSaving
+                        ? 'Salvando...'
+                        : widget.stay == null
+                        ? 'Cadastrar hospedagem'
+                        : 'Salvar alterações',
+                  ),
+                ),
               ],
             ),
-            const SizedBox(height: 24),
-            FilledButton.icon(
-              onPressed: _isSaving ? null : _save,
-              icon: _isSaving
-                  ? const SizedBox(
-                      width: 18,
-                      height: 18,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Icon(Icons.save),
-              label: Text(
-                _isSaving
-                    ? 'Salvando...'
-                    : widget.stay == null
-                    ? 'Cadastrar hospedagem'
-                    : 'Salvar alterações',
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );
