@@ -56,6 +56,27 @@ class _StayFormPageState extends State<StayFormPage> {
     return null;
   }
 
+  String? _validateEmail(String? value) {
+  if (value == null || value.trim().isEmpty) {
+    return 'E-mail é obrigatório';
+  }
+
+  final email = value.trim();
+
+  if (email.length > 254) {
+    return 'E-mail muito longo';
+  }
+
+  final regex = RegExp(
+    r"^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)+$",
+  );
+
+  if (!regex.hasMatch(email)) {
+    return 'E-mail inválido';
+  }
+
+  return null;
+}
 
   @override
   void dispose() {
@@ -219,7 +240,7 @@ class _StayFormPageState extends State<StayFormPage> {
             const SizedBox(height: 16),
             TextFormField(
               controller: _tutorEmailController,
-              validator: _validateRequired,
+              validator: _validateEmail,
               keyboardType: TextInputType.emailAddress,
               decoration: const InputDecoration(
                 labelText: 'Email do tutor',

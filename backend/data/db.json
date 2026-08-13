@@ -5,7 +5,7 @@
       "code": "DOG-2",
       "tutorName": "bla",
       "tutorContact": {
-        "email": "yesye@email",
+        "email": "yesye@email.com",
         "phone": "99999999998"
       },
       "species": "dog",
@@ -13,7 +13,7 @@
       "entryDate": "2026-08-10",
       "expectedExitDate": null,
       "createdAt": "2026-08-10T20:32:26.158Z",
-      "updatedAt": "2026-08-12T23:33:28.748Z"
+      "updatedAt": "2026-08-13T00:18:00.093Z"
     },
     {
       "id": "e48affe7-a946-4b24-aede-f06f1bc7f534",
@@ -35,7 +35,7 @@
       "code": "DOG-3",
       "tutorName": "teste telefone formatado",
       "tutorContact": {
-        "email": "bla@bal",
+        "email": "bla@bal.com",
         "phone": "99999999999"
       },
       "species": "dog",
@@ -43,11 +43,26 @@
       "entryDate": "2026-08-12",
       "expectedExitDate": null,
       "createdAt": "2026-08-12T22:56:56.093Z",
-      "updatedAt": "2026-08-12T22:56:56.093Z"
+      "updatedAt": "2026-08-13T00:18:17.434Z"
+    },
+    {
+      "id": "ae95db67-419e-48ac-9948-00e23bb13590",
+      "code": "DOG-4",
+      "tutorName": "teste",
+      "tutorContact": {
+        "email": "bla@ca.cbs",
+        "phone": "31999999999"
+      },
+      "species": "dog",
+      "breed": "pet",
+      "entryDate": "2026-08-12",
+      "expectedExitDate": null,
+      "createdAt": "2026-08-13T00:17:45.697Z",
+      "updatedAt": "2026-08-13T00:17:45.697Z"
     }
   ],
   "counters": {
-    "dog": 3,
+    "dog": 4,
     "cat": 3
   }
 }
