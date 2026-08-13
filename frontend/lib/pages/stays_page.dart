@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:pluritech_frontend/formatters/phone_formatter.dart';
 import 'stay_form_page.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+
 import '../models/stay.dart';
 import '../services/stay_service.dart';
 
@@ -14,7 +17,7 @@ class StaysPage extends StatefulWidget {
 
 class _StaysPageState extends State<StaysPage> {
   late Future<List<Stay>> _staysFuture;
-
+  final formatter = PhoneFormatter.create();
   @override
   void initState() {
     super.initState();
@@ -119,6 +122,12 @@ class _StaysPageState extends State<StaysPage> {
     }
   }
 
+  _formatPhone(String phone){
+    final formatterPhone = PhoneFormatter.create(initialText: phone);
+
+    return formatterPhone.getMaskedText();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -174,7 +183,7 @@ class _StaysPageState extends State<StaysPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text('Tutor: ${stay.tutorName}'),
-                      Text('Telefone: ${stay.tutorContact.phone}'),
+                      Text('Telefone: ${_formatPhone(stay.tutorContact.phone)}'),
                       Text('Email: ${stay.tutorContact.email}'),
                       Text('Entrada: ${_formatDate(stay.entryDate)}'),
                       Text('Raça: ${stay.breed}'),
