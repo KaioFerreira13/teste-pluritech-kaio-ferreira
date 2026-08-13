@@ -30,7 +30,7 @@ class _StayFormPageState extends State<StayFormPage> {
   final _tutorPhoneController = TextEditingController();
   final _tutorEmailController = TextEditingController();
   final _breedController = TextEditingController();
-  final MaskTextInputFormatter _phoneMaskFormatter = PhoneFormatter.create();
+  late final MaskTextInputFormatter _phoneMaskFormatter;
   DateTime _entryDate = DateTime.now();
   DateTime? _expectedExitDate;
   String? _validateRequired(String? value) {
@@ -55,6 +55,7 @@ class _StayFormPageState extends State<StayFormPage> {
 
     return null;
   }
+
 
   @override
   void dispose() {
@@ -166,15 +167,16 @@ class _StayFormPageState extends State<StayFormPage> {
     super.initState();
 
     final stay = widget.stay;
+    _phoneMaskFormatter = PhoneFormatter.create(
+      initialText: stay?.tutorContact.phone,
+    );
 
     if (stay == null) {
       return;
     }
 
     _tutorNameController.text = stay.tutorName;
-    _tutorPhoneController.text = _phoneMaskFormatter.maskText(
-      stay.tutorContact.phone,
-    );
+    _tutorPhoneController.text = _phoneMaskFormatter.getMaskedText();
     _tutorEmailController.text = stay.tutorContact.email;
     _breedController.text = stay.breed;
     _species = stay.species;
